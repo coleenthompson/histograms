@@ -1,0 +1,39 @@
+##############
+##histograms##
+##############
+
+library(readr)
+
+#list all species folders
+folders <- list.dirs(path = "/Users/coleenthompson/Desktop/vert_test/", full.names = F, recursive = F)
+
+#loop through speies folders
+for (f in folders) {
+  #tryCatch({
+  #change to species f directory
+  dir<-(paste("/Users/coleenthompson/Desktop/vert_test/",f,sep=""))
+  setwd(dir)
+  #read in table with nucleotide data
+  sampletable<-paste(f,"_sampletable.txt",sep="")  
+  sample_table<-read.table(sampletable)
+  #only use cytb data
+  sample_table<-sample_table[sample_table$V3== "TRUE_cytb.fas",]
+  piinside<-sample_table$V4
+  piinside<-as.numeric(piinside)
+  pioutside<-sample_table$V5
+  pioutside<-as.numeric(pioutside)
+  
+  #create histogram based on data
+  pdf(paste(f,"_histogram.pdf",sep=""))
+  		if (piinside > max(pioutside)){
+  		x<- max(piinside) +.005
+  		}
+  hist(pioutside, xlab= "pi outside", main= paste(f," nucleotide diversity", sep=""), xlim= c(0,x)) 
+  abline(v=piinside, col="red")
+  dev.off()
+  
+  #}, error=function(e){ print("separatefilesdonotexist")}  )
+
+}
+
+
